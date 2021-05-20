@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:thailand_covid_19/const/colors.dart';
+import 'package:thailand_covid_19/const/enum.dart';
 import 'package:thailand_covid_19/controller/home_controller.dart';
 
 class NumberStat extends StatelessWidget {
@@ -9,7 +10,7 @@ class NumberStat extends StatelessWidget {
   final Color textColor;
   final NumberSize? size = NumberSize.small;
   final CrossAxisAlignment alignment;
-  final StatType type;
+  final CovidType type;
   const NumberStat({
     Key? key,
     required this.controller,
@@ -76,15 +77,15 @@ class NumberStat extends StatelessWidget {
     );
   }
 
-  String typeStat(StatType type) {
+  String typeStat(CovidType type) {
     switch (type) {
-      case StatType.confirmed:
+      case CovidType.confirmed:
         return controller.covidToday.newConfirmed;
-      case StatType.hospitalized:
+      case CovidType.hospitalized:
         return controller.covidToday.newHospitalized;
-      case StatType.recovered:
+      case CovidType.recovered:
         return controller.covidToday.newRecovered;
-      case StatType.deaths:
+      case CovidType.deaths:
         return controller.covidToday.newDeaths;
       default:
         return "";
@@ -92,16 +93,4 @@ class NumberStat extends StatelessWidget {
   }
 
   double fontSize(NumberSize? size) => size == NumberSize.big ? 54 : 42;
-}
-
-enum NumberSize {
-  big,
-  small,
-}
-
-enum StatType {
-  confirmed,
-  hospitalized,
-  recovered,
-  deaths,
 }

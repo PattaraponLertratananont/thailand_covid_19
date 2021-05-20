@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:thailand_covid_19/const/colors.dart';
+import 'package:thailand_covid_19/const/enum.dart';
 import 'package:thailand_covid_19/controller/home_controller.dart';
+import 'package:thailand_covid_19/widget/covid_updated_date.dart';
 import 'package:thailand_covid_19/widget/number_stat.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -78,14 +80,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             size: NumberSize.big,
                             textColor: AppColors.yellow,
                             alignment: CrossAxisAlignment.start,
-                            type: StatType.confirmed,
+                            type: CovidType.confirmed,
                           ),
                           NumberStat(
                             controller: controller,
                             label: "เข้ารักษาตัว",
                             textColor: AppColors.blue,
                             alignment: CrossAxisAlignment.end,
-                            type: StatType.hospitalized,
+                            type: CovidType.hospitalized,
                           ),
                         ],
                       ),
@@ -102,19 +104,19 @@ class _HomeScreenState extends State<HomeScreen> {
                             size: NumberSize.big,
                             textColor: AppColors.green,
                             alignment: CrossAxisAlignment.start,
-                            type: StatType.recovered,
+                            type: CovidType.recovered,
                           ),
                           NumberStat(
                             controller: controller,
                             label: "เสียชีวิต",
                             textColor: AppColors.red,
                             alignment: CrossAxisAlignment.end,
-                            type: StatType.deaths,
+                            type: CovidType.deaths,
                           ),
                         ],
                       ),
                     ),
-                    covidTodayAtDate(controller.covidTodayController),
+                    CovidUpdatedDate(controller),
                   ],
                 ),
               ),
@@ -467,43 +469,6 @@ class _HomeScreenState extends State<HomeScreen> {
           controller.setCovidToday();
         },
       ),
-    );
-  }
-
-  Widget covidTodayAtDate(CovidTodayController covidTodayController) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        covidTodayController.obx(
-          (state) {
-            return Text(
-              "ข้อมูลเมื่อ ${controller.covidToday.updateDate}",
-              textAlign: TextAlign.right,
-              style: TextStyle(
-                color: AppColors.dark[400],
-                fontSize: 10,
-              ),
-            );
-          },
-          onEmpty: Text(
-            "ไม่มีข้อมูล",
-            textAlign: TextAlign.right,
-            style: TextStyle(
-              color: AppColors.dark[400],
-              fontSize: 10,
-            ),
-          ),
-          onLoading: Text(
-            "กำลังดึงข้อมูล...",
-            textAlign: TextAlign.right,
-            style: TextStyle(
-              color: AppColors.dark[400],
-              fontSize: 10,
-            ),
-          ),
-          onError: (error) => cardError(),
-        ),
-      ],
     );
   }
 }
