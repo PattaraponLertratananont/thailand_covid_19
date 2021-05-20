@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Container(
               width: Get.width,
-              margin: EdgeInsets.only(top: 8, bottom: 24),
+              margin: EdgeInsets.only(top: 16, bottom: 16),
               child: Text(
                 "Thailand COVID-19",
                 textAlign: TextAlign.left,
@@ -59,21 +59,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Expanded(
-                              child: Text(
-                                "สถานการณ์ COVID-19 ณ วันที่ ${controller.covidToday.value.updateDate}",
-                                style: TextStyle(
-                                  color: AppColors.dark[300],
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
+                            titleCard("สถานการณ์ COVID-19 วันนี้"),
                           ],
                         ),
                       ),
                       Container(
-                        margin: EdgeInsets.only(top: 16),
+                        margin: EdgeInsets.only(top: 8),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.end,
@@ -84,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       Container(
-                        margin: EdgeInsets.only(top: 16),
+                        margin: EdgeInsets.only(top: 8),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.end,
@@ -94,12 +85,156 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                            "ข้อมูลเมื่อ ${controller.covidToday.value.updateDate}",
+                            style: TextStyle(
+                              color: AppColors.dark[400],
+                              fontSize: 10,
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   );
                 },
-                onEmpty: newCovidEmpty(),
-                onError: (error) => newCovidError(),
-                onLoading: newCovidLoading(),
+                onEmpty: cardEmpty(),
+                onError: (error) => cardError(),
+                onLoading: cardLoading(),
+              ),
+            ),
+            SizedBox(height: 24),
+            Container(
+              width: Get.width,
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.dark[600],
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: controller.obx(
+                (state) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          titleCard("สถานการณ์ COVID-19 โดยรวม"),
+                        ],
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 16),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  "ผู้ติดเขื้อสะสม ",
+                                  style: TextStyle(
+                                    color: AppColors.dark[300],
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  controller.covidToday.value.confirmed,
+                                  style: TextStyle(
+                                    color: AppColors.yellow,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    height: 1.2,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  "รักษาตัวอยู่ ",
+                                  style: TextStyle(
+                                    color: AppColors.dark[300],
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  controller.covidToday.value.hospitalized,
+                                  style: TextStyle(
+                                    color: AppColors.blue,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    height: 1.2,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 16),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  "รักษาหายแล้ว ",
+                                  style: TextStyle(
+                                    color: AppColors.dark[300],
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  controller.covidToday.value.recovered,
+                                  style: TextStyle(
+                                    color: AppColors.green,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    height: 1.2,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  "เสียชีวิต ",
+                                  style: TextStyle(
+                                    color: AppColors.dark[300],
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  controller.covidToday.value.deaths,
+                                  style: TextStyle(
+                                    color: AppColors.red,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    height: 1.2,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
+                },
+                onEmpty: cardEmpty(),
+                onError: (error) => cardError(),
+                onLoading: cardLoading(),
               ),
             ),
           ],
@@ -108,7 +243,20 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Center newCovidEmpty() {
+  Widget titleCard(String title) {
+    return Expanded(
+      child: Text(
+        title,
+        style: TextStyle(
+          color: AppColors.dark[300],
+          fontSize: 14,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+
+  Widget cardEmpty() {
     return Center(
       child: TextButton(
         child: Text(
@@ -126,7 +274,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Center newCovidLoading() {
+  Widget cardLoading() {
     return Center(
       child: CircularProgressIndicator(
         backgroundColor: AppColors.dark[400],
@@ -135,7 +283,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Center newCovidError() {
+  Widget cardError() {
     return Center(
       child: TextButton(
         child: Text(
@@ -170,7 +318,7 @@ class _HomeScreenState extends State<HomeScreen> {
             color: AppColors.red,
             fontWeight: FontWeight.bold,
             fontSize: 42,
-            height: 1.4,
+            height: 1.2,
           ),
         ),
       ],
@@ -194,7 +342,7 @@ class _HomeScreenState extends State<HomeScreen> {
             color: AppColors.green,
             fontWeight: FontWeight.bold,
             fontSize: 42,
-            height: 1.4,
+            height: 1.2,
           ),
         ),
       ],

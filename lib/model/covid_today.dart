@@ -2,10 +2,10 @@ import 'package:intl/intl.dart';
 import 'package:thailand_covid_19/helper/date_time.dart';
 
 class CovidToday {
-  int? confirmed;
-  int? recovered;
-  int? hospitalized;
-  int? deaths;
+  int? _confirmed;
+  int? _recovered;
+  int? _hospitalized;
+  int? _deaths;
   int? _newConfirmed;
   int? _newRecovered;
   int? _newHospitalized;
@@ -16,20 +16,16 @@ class CovidToday {
   String? severBy;
 
   CovidToday({
-    this.confirmed,
-    this.recovered,
-    this.hospitalized,
-    this.deaths,
     this.source,
     this.devBy,
     this.severBy,
   });
 
   CovidToday.fromJson(Map<String, dynamic> json) {
-    confirmed = json['Confirmed'];
-    recovered = json['Recovered'];
-    hospitalized = json['Hospitalized'];
-    deaths = json['Deaths'];
+    _confirmed = json['Confirmed'];
+    _recovered = json['Recovered'];
+    _hospitalized = json['Hospitalized'];
+    _deaths = json['Deaths'];
     _newConfirmed = json['NewConfirmed'];
     _newRecovered = json['NewRecovered'];
     _newHospitalized = json['NewHospitalized'];
@@ -91,6 +87,22 @@ class CovidToday {
     } else {
       return "${formatNumber(_newDeaths!)}";
     }
+  }
+
+  String get confirmed {
+    return "${formatNumber(_confirmed!)}";
+  }
+
+  String get hospitalized {
+    return "${formatNumber(_hospitalized!)}";
+  }
+
+  String get recovered {
+    return "${formatNumber(_recovered!)}";
+  }
+
+  String get deaths {
+    return "${formatNumber(_deaths!)}";
   }
 
   String formatNumber(int number) {
