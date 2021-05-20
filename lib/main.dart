@@ -12,6 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      title: "Thailand COVID-19",
       color: AppColors.dark,
       theme: ThemeData(fontFamily: GoogleFonts.kanit().fontFamily),
       initialRoute: "/home",
