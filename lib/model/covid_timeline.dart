@@ -2,48 +2,76 @@ import 'package:intl/intl.dart';
 import 'package:thailand_covid_19/helper/date_time.dart';
 import 'package:thailand_covid_19/helper/number.dart';
 
-class CovidToday {
-  int? _confirmed;
-  int? _recovered;
-  int? _hospitalized;
-  int? _deaths;
+class CovidTimeline {
+  String? updateDate;
+  List<Data>? data;
+
+  CovidTimeline({
+    this.updateDate,
+    this.data,
+  });
+
+  CovidTimeline.fromJson(Map<String, dynamic> json) {
+    updateDate = json['UpdateDate'];
+    data =
+        List<dynamic>.from(json['Data']).map((e) => Data.fromJson(e)).toList();
+  }
+  Map<String, dynamic> toJson() {
+    final _data = <String, dynamic>{};
+    _data['UpdateDate'] = updateDate;
+    _data['Data'] = data!.map((e) => e.toJson()).toList();
+    return _data;
+  }
+}
+
+class Data {
+  String? _date;
   int? _newConfirmed;
   int? _newRecovered;
   int? _newHospitalized;
   int? _newDeaths;
-  String? _updateDate;
+  int? confirmed;
+  int? recovered;
+  int? hospitalized;
+  int? deaths;
 
-  CovidToday();
+  Data({
+    this.confirmed,
+    this.recovered,
+    this.hospitalized,
+    this.deaths,
+  });
 
-  CovidToday.fromJson(Map<String, dynamic> json) {
-    _confirmed = json['Confirmed'];
-    _recovered = json['Recovered'];
-    _hospitalized = json['Hospitalized'];
-    _deaths = json['Deaths'];
+  Data.fromJson(Map<String, dynamic> json) {
+    _date = json['Date'];
     _newConfirmed = json['NewConfirmed'];
     _newRecovered = json['NewRecovered'];
     _newHospitalized = json['NewHospitalized'];
     _newDeaths = json['NewDeaths'];
-    _updateDate = json['UpdateDate'];
+    confirmed = json['Confirmed'];
+    recovered = json['Recovered'];
+    hospitalized = json['Hospitalized'];
+    deaths = json['Deaths'];
   }
   Map<String, dynamic> toJson() {
     final _data = <String, dynamic>{};
-    _data['Confirmed'] = confirmed;
-    _data['Recovered'] = recovered;
-    _data['Hospitalized'] = hospitalized;
-    _data['Deaths'] = deaths;
+    _data['Date'] = date;
     _data['NewConfirmed'] = newConfirmed;
     _data['NewRecovered'] = newRecovered;
     _data['NewHospitalized'] = newHospitalized;
     _data['NewDeaths'] = newDeaths;
-    _data['UpdateDate'] = updateDate;
+    _data['Confirmed'] = confirmed;
+    _data['Recovered'] = recovered;
+    _data['Hospitalized'] = hospitalized;
+    _data['Deaths'] = deaths;
     return _data;
   }
 
-  String get updateDate {
+  String get date {
     try {
-      DateTime newDate = DateTimeHelper().convertFormatDateWithBE(_updateDate!);
-      return DateFormat("dd MMM yyyy เวลา HH:mm น.", "th").format(newDate);
+      DateTime newDate = DateTimeHelper()
+          .convertFormatDateWithBE(_date!, format: "MM/dd/yyyy");
+      return DateFormat("dd MMM yy", "th").format(newDate);
     } catch (e) {
       return "";
     }
@@ -79,21 +107,5 @@ class CovidToday {
     } else {
       return "${formatNumber(_newDeaths!)}";
     }
-  }
-
-  String get confirmed {
-    return "${formatNumber(_confirmed!)}";
-  }
-
-  String get hospitalized {
-    return "${formatNumber(_hospitalized!)}";
-  }
-
-  String get recovered {
-    return "${formatNumber(_recovered!)}";
-  }
-
-  String get deaths {
-    return "${formatNumber(_deaths!)}";
   }
 }

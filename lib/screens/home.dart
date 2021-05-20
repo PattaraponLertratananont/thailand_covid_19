@@ -14,6 +14,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     controller = Get.put(HomeController());
     controller.setCovidToday();
+    controller.setCovidTimeline();
     super.initState();
   }
 
@@ -28,216 +29,302 @@ class _HomeScreenState extends State<HomeScreen> {
           left: 24,
           right: 24,
         ),
-        child: Column(
-          children: [
-            Container(
-              width: Get.width,
-              margin: EdgeInsets.only(top: 16, bottom: 16),
-              child: Text(
-                "Thailand COVID-19",
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  color: AppColors.dark[300],
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24,
+        child: SingleChildScrollView(
+          physics: ClampingScrollPhysics(),
+          child: Column(
+            children: [
+              Container(
+                width: Get.width,
+                margin: EdgeInsets.only(top: 16, bottom: 16),
+                child: Text(
+                  "Thailand COVID-19",
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    color: AppColors.dark[300],
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24,
+                  ),
                 ),
               ),
-            ),
-            Container(
-              width: Get.width,
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: AppColors.dark[600],
-                borderRadius: BorderRadius.circular(8),
+              Container(
+                width: Get.width,
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColors.dark[600],
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: controller.covidTodayController.obx(
+                  (state) {
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              titleCard("สถานการณ์ COVID-19 วันนี้"),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(top: 8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              newConfirmed(),
+                              newHospitalized(),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(top: 8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              newRecovered(),
+                              newDeaths(),
+                            ],
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              "ข้อมูลเมื่อ ${controller.covidToday.updateDate}",
+                              style: TextStyle(
+                                color: AppColors.dark[400],
+                                fontSize: 10,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    );
+                  },
+                  onEmpty: cardEmpty(),
+                  onError: (error) => cardError(),
+                  onLoading: cardLoading(),
+                ),
               ),
-              child: controller.obx(
-                (state) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              SizedBox(height: 24),
+              Container(
+                width: Get.width,
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColors.dark[600],
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: controller.covidTodayController.obx(
+                  (state) {
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
                           children: [
-                            titleCard("สถานการณ์ COVID-19 วันนี้"),
+                            titleCard("สถานการณ์ COVID-19 โดยรวม"),
                           ],
                         ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            newConfirmed(),
-                            newHospitalized(),
-                          ],
+                        Container(
+                          margin: EdgeInsets.only(top: 16),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    "ผู้ติดเขื้อสะสม ",
+                                    style: TextStyle(
+                                      color: AppColors.dark[300],
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    controller.covidToday.confirmed,
+                                    style: TextStyle(
+                                      color: AppColors.yellow,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      height: 1.2,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    "รักษาตัวอยู่ ",
+                                    style: TextStyle(
+                                      color: AppColors.dark[300],
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    controller.covidToday.hospitalized,
+                                    style: TextStyle(
+                                      color: AppColors.blue,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      height: 1.2,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            newRecovered(),
-                            newDeaths(),
-                          ],
+                        Container(
+                          margin: EdgeInsets.only(top: 16),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    "รักษาหายแล้ว ",
+                                    style: TextStyle(
+                                      color: AppColors.dark[300],
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    controller.covidToday.recovered,
+                                    style: TextStyle(
+                                      color: AppColors.green,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      height: 1.2,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    "เสียชีวิต ",
+                                    style: TextStyle(
+                                      color: AppColors.dark[300],
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    controller.covidToday.deaths,
+                                    style: TextStyle(
+                                      color: AppColors.red,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      height: 1.2,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            "ข้อมูลเมื่อ ${controller.covidToday.value.updateDate}",
+                      ],
+                    );
+                  },
+                  onEmpty: cardEmpty(),
+                  onError: (error) => cardError(),
+                  onLoading: cardLoading(),
+                ),
+              ),
+              SizedBox(height: 24),
+              Container(
+                width: Get.width,
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColors.dark[600],
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      children: [
+                        titleCard("สถานการณ์ COVID-19 ย้อนหลัง"),
+                        InkWell(
+                          child: Text(
+                            "ดูเพิ่มเติม",
                             style: TextStyle(
-                              color: AppColors.dark[400],
-                              fontSize: 10,
+                              decoration: TextDecoration.underline,
+                              color: AppColors.dark[300],
                             ),
                           ),
-                        ],
-                      ),
-                    ],
-                  );
-                },
-                onEmpty: cardEmpty(),
-                onError: (error) => cardError(),
-                onLoading: cardLoading(),
+                          onTap: () {},
+                        )
+                      ],
+                    ),
+                    controller.covidTimelineController.obx(
+                      (state) {
+                        return Container(
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            padding: EdgeInsets.only(top: 16),
+                            physics: ClampingScrollPhysics(),
+                            itemCount: 5,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Container(
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      "${controller.getTimelineData[index].date} - ติดเชื้อ ",
+                                      style: TextStyle(
+                                        color: AppColors.dark[300],
+                                        fontSize: 10,
+                                      ),
+                                    ),
+                                    Text(
+                                      controller
+                                          .getTimelineData[index].newConfirmed,
+                                      style: TextStyle(
+                                        color: AppColors.yellow,
+                                        fontSize: 10,
+                                      ),
+                                    ),
+                                    Text(
+                                      " | รักษาหาย ",
+                                      style: TextStyle(
+                                        color: AppColors.dark[300],
+                                        fontSize: 10,
+                                      ),
+                                    ),
+                                    Text(
+                                      "${controller.getTimelineData[index].newConfirmed} ",
+                                      style: TextStyle(
+                                        color: AppColors.yellow,
+                                        fontSize: 10,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      },
+                      onEmpty: cardEmpty(),
+                      onError: (error) => cardError(),
+                      onLoading: cardLoading(),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: 24),
-            Container(
-              width: Get.width,
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: AppColors.dark[600],
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: controller.obx(
-                (state) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          titleCard("สถานการณ์ COVID-19 โดยรวม"),
-                        ],
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 16),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(
-                                  "ผู้ติดเขื้อสะสม ",
-                                  style: TextStyle(
-                                    color: AppColors.dark[300],
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  controller.covidToday.value.confirmed,
-                                  style: TextStyle(
-                                    color: AppColors.yellow,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    height: 1.2,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(
-                                  "รักษาตัวอยู่ ",
-                                  style: TextStyle(
-                                    color: AppColors.dark[300],
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  controller.covidToday.value.hospitalized,
-                                  style: TextStyle(
-                                    color: AppColors.blue,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    height: 1.2,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 16),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(
-                                  "รักษาหายแล้ว ",
-                                  style: TextStyle(
-                                    color: AppColors.dark[300],
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  controller.covidToday.value.recovered,
-                                  style: TextStyle(
-                                    color: AppColors.green,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    height: 1.2,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(
-                                  "เสียชีวิต ",
-                                  style: TextStyle(
-                                    color: AppColors.dark[300],
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  controller.covidToday.value.deaths,
-                                  style: TextStyle(
-                                    color: AppColors.red,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    height: 1.2,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  );
-                },
-                onEmpty: cardEmpty(),
-                onError: (error) => cardError(),
-                onLoading: cardLoading(),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -313,7 +400,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         Text(
-          controller.covidToday.value.newDeaths,
+          controller.covidToday.newDeaths,
           style: TextStyle(
             color: AppColors.red,
             fontWeight: FontWeight.bold,
@@ -337,7 +424,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         Text(
-          controller.covidToday.value.newRecovered,
+          controller.covidToday.newRecovered,
           style: TextStyle(
             color: AppColors.green,
             fontWeight: FontWeight.bold,
@@ -363,7 +450,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           Text(
-            controller.covidToday.value.newHospitalized,
+            controller.covidToday.newHospitalized,
             style: TextStyle(
               color: AppColors.blue,
               fontWeight: FontWeight.bold,
@@ -388,7 +475,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         Text(
-          controller.covidToday.value.newConfirmed,
+          controller.covidToday.newConfirmed,
           style: TextStyle(
             color: AppColors.yellow,
             fontWeight: FontWeight.bold,
