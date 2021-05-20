@@ -248,7 +248,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Text(
         title,
         style: TextStyle(
-          color: AppColors.dark[300],
+          color: AppColors.white,
           fontSize: 14,
           fontWeight: FontWeight.bold,
         ),

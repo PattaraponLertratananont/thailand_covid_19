@@ -15,11 +15,7 @@ class CovidToday {
   String? devBy;
   String? severBy;
 
-  CovidToday({
-    this.source,
-    this.devBy,
-    this.severBy,
-  });
+  CovidToday();
 
   CovidToday.fromJson(Map<String, dynamic> json) {
     _confirmed = json['Confirmed'];
