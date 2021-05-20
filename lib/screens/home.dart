@@ -275,43 +275,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             shrinkWrap: true,
                             padding: EdgeInsets.only(top: 16),
                             physics: ClampingScrollPhysics(),
-                            itemCount: 5,
+                            itemCount: 2,
                             itemBuilder: (BuildContext context, int index) {
-                              return Container(
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      "${controller.getTimelineData[index].date} - ติดเชื้อ ",
-                                      style: TextStyle(
-                                        color: AppColors.dark[300],
-                                        fontSize: 10,
-                                      ),
-                                    ),
-                                    Text(
-                                      controller
-                                          .getTimelineData[index].newConfirmed,
-                                      style: TextStyle(
-                                        color: AppColors.yellow,
-                                        fontSize: 10,
-                                      ),
-                                    ),
-                                    Text(
-                                      " | รักษาหาย ",
-                                      style: TextStyle(
-                                        color: AppColors.dark[300],
-                                        fontSize: 10,
-                                      ),
-                                    ),
-                                    Text(
-                                      "${controller.getTimelineData[index].newConfirmed} ",
-                                      style: TextStyle(
-                                        color: AppColors.yellow,
-                                        fontSize: 10,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
+                              return covidTimeline(index);
                             },
                           ),
                         );
@@ -326,6 +292,113 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget covidTimeline(int index) {
+    return Container(
+      padding: EdgeInsets.only(bottom: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "${controller.getTimelineData[index].date} - ",
+            style: TextStyle(
+              color: AppColors.dark[300],
+              fontSize: 12,
+            ),
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          "ผู้ติดเชื้อ ",
+                          style: TextStyle(
+                            color: AppColors.dark[300],
+                            fontSize: 12,
+                          ),
+                        ),
+                        Text(
+                          controller.getTimelineData[index].newConfirmed,
+                          style: TextStyle(
+                            color: AppColors.yellow,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          "เข้ารักษา ",
+                          style: TextStyle(
+                            color: AppColors.dark[300],
+                            fontSize: 12,
+                          ),
+                        ),
+                        Text(
+                          controller.getTimelineData[index].newHospitalized,
+                          style: TextStyle(
+                            color: AppColors.blue,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          "รักษาหาย ",
+                          style: TextStyle(
+                            color: AppColors.dark[300],
+                            fontSize: 12,
+                          ),
+                        ),
+                        Text(
+                          controller.getTimelineData[index].newRecovered,
+                          style: TextStyle(
+                            color: AppColors.green,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          "เสียชีวิต ",
+                          style: TextStyle(
+                            color: AppColors.dark[300],
+                            fontSize: 12,
+                          ),
+                        ),
+                        Text(
+                          controller.getTimelineData[index].newDeaths,
+                          style: TextStyle(
+                            color: AppColors.red,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
