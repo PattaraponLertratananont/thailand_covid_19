@@ -6,13 +6,17 @@ class HomeController extends GetxController with StateMixin<CovidToday> {
   Rx<CovidToday> covidToday = CovidToday().obs;
 
   Future<void> setCovidToday() async {
-    change(covidToday.value, status: RxStatus.loading());
-    CovidToday? data = await CovidService().fetchDataToday();
-    if (data != null) {
-      covidToday.value = data;
-      change(covidToday.value, status: RxStatus.success());
-    } else {
-      change(covidToday.value, status: RxStatus.empty());
+    try {
+      change(covidToday.value, status: RxStatus.loading());
+      CovidToday? data = await CovidService().fetchDataToday();
+      if (data != null) {
+        covidToday.value = data;
+        change(covidToday.value, status: RxStatus.success());
+      } else {
+        change(covidToday.value, status: RxStatus.empty());
+      }
+    } catch (e) {
+      change(covidToday.value, status: RxStatus.error());
     }
   }
 }

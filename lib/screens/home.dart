@@ -45,7 +45,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             Container(
               width: Get.width,
-              height: Get.height * 0.3,
               padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: AppColors.dark[600],
@@ -54,6 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: controller.obx(
                 (state) {
                   return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
                         child: Row(
@@ -72,21 +72,183 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       ),
+                      Container(
+                        margin: EdgeInsets.only(top: 16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            newConfirmed(),
+                            newHospitalized(),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            newRecovered(),
+                            newDeaths(),
+                          ],
+                        ),
+                      ),
                     ],
                   );
                 },
-                onEmpty: Container(),
-                onLoading: Center(
-                  child: CircularProgressIndicator(
-                    backgroundColor: AppColors.dark[400],
-                    color: AppColors.white,
-                  ),
-                ),
+                onEmpty: newCovidEmpty(),
+                onError: (error) => newCovidError(),
+                onLoading: newCovidLoading(),
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Center newCovidEmpty() {
+    return Center(
+      child: TextButton(
+        child: Text(
+          "ไม่มีข้อมูล กดเพื่อดึงข้อมูลอีกครั้ง",
+          style: TextStyle(
+            decoration: TextDecoration.underline,
+          ),
+        ),
+        style: ButtonStyle(
+            foregroundColor: MaterialStateProperty.all(AppColors.dark[300])),
+        onPressed: () {
+          controller.setCovidToday();
+        },
+      ),
+    );
+  }
+
+  Center newCovidLoading() {
+    return Center(
+      child: CircularProgressIndicator(
+        backgroundColor: AppColors.dark[400],
+        color: AppColors.white,
+      ),
+    );
+  }
+
+  Center newCovidError() {
+    return Center(
+      child: TextButton(
+        child: Text(
+          "เกิดข้อผิดพลาด กดเพื่อดึงข้อมูลอีกครั้ง",
+          style: TextStyle(
+            decoration: TextDecoration.underline,
+          ),
+        ),
+        style: ButtonStyle(
+            foregroundColor: MaterialStateProperty.all(AppColors.dark[300])),
+        onPressed: () {
+          controller.setCovidToday();
+        },
+      ),
+    );
+  }
+
+  Widget newDeaths() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Text(
+          "เสียชีวิต",
+          style: TextStyle(
+            color: AppColors.dark[300],
+            fontSize: 12,
+          ),
+        ),
+        Text(
+          controller.covidToday.value.newDeaths,
+          style: TextStyle(
+            color: AppColors.red,
+            fontWeight: FontWeight.bold,
+            fontSize: 42,
+            height: 1.4,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget newRecovered() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "รักษาหาย",
+          style: TextStyle(
+            color: AppColors.dark[300],
+            fontSize: 12,
+          ),
+        ),
+        Text(
+          controller.covidToday.value.newRecovered,
+          style: TextStyle(
+            color: AppColors.green,
+            fontWeight: FontWeight.bold,
+            fontSize: 42,
+            height: 1.4,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget newHospitalized() {
+    return Container(
+      padding: EdgeInsets.only(bottom: 4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Text(
+            "เข้ารักษาตัว",
+            style: TextStyle(
+              color: AppColors.dark[300],
+              fontSize: 12,
+            ),
+          ),
+          Text(
+            controller.covidToday.value.newHospitalized,
+            style: TextStyle(
+              color: AppColors.blue,
+              fontWeight: FontWeight.bold,
+              fontSize: 42,
+              height: 1.2,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget newConfirmed() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "ยอดผู้ติดเชื้อ",
+          style: TextStyle(
+            color: AppColors.dark[300],
+            fontSize: 14,
+          ),
+        ),
+        Text(
+          controller.covidToday.value.newConfirmed,
+          style: TextStyle(
+            color: AppColors.yellow,
+            fontWeight: FontWeight.bold,
+            fontSize: 54,
+            height: 1.2,
+          ),
+        ),
+      ],
     );
   }
 }
