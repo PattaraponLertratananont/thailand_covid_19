@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:thailand_covid_19/const/colors.dart';
 import 'package:thailand_covid_19/screens/home.dart';
 
 void main() {
+  initializeDateFormatting("th");
   runApp(MyApp());
 }
 

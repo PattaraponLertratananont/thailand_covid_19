@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           children: [
                             Expanded(
                               child: Text(
-                                "สถานการณ์ COVID-19 ณ วันที่ 20 พ.ค. 2564 เวลา 11:54 น.",
+                                "สถานการณ์ COVID-19 ณ วันที่ ${controller.covidToday.value.updateDate}",
                                 style: TextStyle(
                                   color: AppColors.dark[300],
                                   fontSize: 10,

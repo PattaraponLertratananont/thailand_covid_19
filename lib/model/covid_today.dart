@@ -1,3 +1,6 @@
+import 'package:intl/intl.dart';
+import 'package:thailand_covid_19/helper/date_time.dart';
+
 class CovidToday {
   int? confirmed;
   int? recovered;
@@ -56,5 +59,9 @@ class CovidToday {
     _data['SeverBy'] = severBy;
     return _data;
   }
-  String get updateDate => DateTime.parse(_updateDate!).toString();
+
+  String get updateDate {
+    DateTime newDate = DateTimeHelper().convertFormatDateWithBE(_updateDate!);
+    return DateFormat("dd MMM yyyy เวลา HH:mm น.", "th").format(newDate);
+  }
 }
