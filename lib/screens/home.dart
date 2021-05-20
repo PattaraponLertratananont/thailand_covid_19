@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:thailand_covid_19/const/colors.dart';
 import 'package:thailand_covid_19/controller/home_controller.dart';
+import 'package:thailand_covid_19/widget/number_stat.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -53,60 +54,68 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: AppColors.dark[600],
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: controller.covidTodayController.obx(
-                  (state) {
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              titleCard("สถานการณ์ COVID-19 วันนี้"),
-                            ],
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          titleCard("สถานการณ์ COVID-19 วันนี้"),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(top: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          NumberStat(
+                            controller: controller,
+                            label: "ยอดผู้ติดเชื้อ",
+                            size: NumberSize.big,
+                            textColor: AppColors.yellow,
+                            alignment: CrossAxisAlignment.start,
+                            type: StatType.confirmed,
                           ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(top: 8),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              newConfirmed(),
-                              newHospitalized(),
-                            ],
+                          NumberStat(
+                            controller: controller,
+                            label: "เข้ารักษาตัว",
+                            textColor: AppColors.blue,
+                            alignment: CrossAxisAlignment.end,
+                            type: StatType.hospitalized,
                           ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(top: 8),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              newRecovered(),
-                              newDeaths(),
-                            ],
+                        ],
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(top: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          NumberStat(
+                            controller: controller,
+                            label: "รักษาหาย",
+                            size: NumberSize.big,
+                            textColor: AppColors.green,
+                            alignment: CrossAxisAlignment.start,
+                            type: StatType.recovered,
                           ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Text(
-                              "ข้อมูลเมื่อ ${controller.covidToday.updateDate}",
-                              style: TextStyle(
-                                color: AppColors.dark[400],
-                                fontSize: 10,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    );
-                  },
-                  onEmpty: cardEmpty(),
-                  onError: (error) => cardError(),
-                  onLoading: cardLoading(),
+                          NumberStat(
+                            controller: controller,
+                            label: "เสียชีวิต",
+                            textColor: AppColors.red,
+                            alignment: CrossAxisAlignment.end,
+                            type: StatType.deaths,
+                          ),
+                        ],
+                      ),
+                    ),
+                    covidTodayAtDate(controller.covidTodayController),
+                  ],
                 ),
               ),
               SizedBox(height: 24),
@@ -461,100 +470,38 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget newDeaths() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
+  Widget covidTodayAtDate(CovidTodayController covidTodayController) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        Text(
-          "เสียชีวิต",
-          style: TextStyle(
-            color: AppColors.dark[300],
-            fontSize: 12,
-          ),
-        ),
-        Text(
-          controller.covidToday.newDeaths,
-          style: TextStyle(
-            color: AppColors.red,
-            fontWeight: FontWeight.bold,
-            fontSize: 42,
-            height: 1.2,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget newRecovered() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "รักษาหาย",
-          style: TextStyle(
-            color: AppColors.dark[300],
-            fontSize: 12,
-          ),
-        ),
-        Text(
-          controller.covidToday.newRecovered,
-          style: TextStyle(
-            color: AppColors.green,
-            fontWeight: FontWeight.bold,
-            fontSize: 42,
-            height: 1.2,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget newHospitalized() {
-    return Container(
-      padding: EdgeInsets.only(bottom: 4),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(
-            "เข้ารักษาตัว",
+        covidTodayController.obx(
+          (state) {
+            return Text(
+              "ข้อมูลเมื่อ ${controller.covidToday.updateDate}",
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                color: AppColors.dark[400],
+                fontSize: 10,
+              ),
+            );
+          },
+          onEmpty: Text(
+            "ไม่มีข้อมูล",
+            textAlign: TextAlign.right,
             style: TextStyle(
-              color: AppColors.dark[300],
-              fontSize: 12,
+              color: AppColors.dark[400],
+              fontSize: 10,
             ),
           ),
-          Text(
-            controller.covidToday.newHospitalized,
+          onLoading: Text(
+            "กำลังดึงข้อมูล...",
+            textAlign: TextAlign.right,
             style: TextStyle(
-              color: AppColors.blue,
-              fontWeight: FontWeight.bold,
-              fontSize: 42,
-              height: 1.2,
+              color: AppColors.dark[400],
+              fontSize: 10,
             ),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget newConfirmed() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "ยอดผู้ติดเชื้อ",
-          style: TextStyle(
-            color: AppColors.dark[300],
-            fontSize: 14,
-          ),
-        ),
-        Text(
-          controller.covidToday.newConfirmed,
-          style: TextStyle(
-            color: AppColors.yellow,
-            fontWeight: FontWeight.bold,
-            fontSize: 54,
-            height: 1.2,
-          ),
+          onError: (error) => cardError(),
         ),
       ],
     );
